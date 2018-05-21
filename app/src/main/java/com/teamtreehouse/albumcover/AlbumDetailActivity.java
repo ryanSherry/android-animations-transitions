@@ -1,5 +1,9 @@
 package com.teamtreehouse.albumcover;
 
+import android.animation.Animator;
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
@@ -17,6 +21,8 @@ import android.transition.TransitionSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
@@ -52,6 +58,39 @@ public class AlbumDetailActivity extends Activity {
         setupTransitions();
     }
 
+    private void animate() {
+        Animator scaleFab = AnimatorInflater.loadAnimator(this, R.animator.scale);
+        scaleFab.setTarget(fab);
+
+//        ObjectAnimator scalex = ObjectAnimator.ofFloat(fab, "scaleX", 0, 1);
+//        ObjectAnimator scaley = ObjectAnimator.ofFloat(fab, "scaleY", 0, 1);
+//        AnimatorSet scaleFab = new AnimatorSet();
+//        scaleFab.playTogether(scalex, scaley);
+
+        int titleStartValue = titlePanel.getTop();
+        int titleEndValue = titlePanel.getBottom();
+        ObjectAnimator animatorTitle = ObjectAnimator.ofInt(titlePanel, "bottom", titleStartValue, titleEndValue);
+        animatorTitle.setInterpolator(new AccelerateInterpolator());
+
+        int trackPanelStartValue = trackPanel.getTop();
+        int trackPanelEndValue = trackPanel.getBottom();
+        ObjectAnimator animatorTrack = ObjectAnimator.ofInt(trackPanel,"bottom",trackPanelStartValue,trackPanelEndValue);
+        animatorTrack.setInterpolator(new DecelerateInterpolator());
+
+        titlePanel.setBottom(titleStartValue);
+        trackPanel.setBottom(titleStartValue);
+        fab.setScaleX(0);
+        fab.setScaleY(0);
+
+//        animatorTitle.setDuration(1000);
+//        animatorTrack.setDuration(1000);
+//        animatorTitle.setStartDelay(1000);
+
+        AnimatorSet set = new AnimatorSet();
+        set.playSequentially(animatorTitle,animatorTrack,scaleFab);
+        set.start();
+    }
+
     private Transition createTransition() {
         TransitionSet set = new TransitionSet();
         set.setOrdering(TransitionSet.ORDERING_SEQUENTIAL);
@@ -77,11 +116,13 @@ public class AlbumDetailActivity extends Activity {
 
     @OnClick(R.id.album_art)
     public void onAlbumArtClick(View view) {
-        Transition transition = createTransition();
-        TransitionManager.beginDelayedTransition(detailContainer, transition);
-        fab.setVisibility(View.INVISIBLE);
-        titlePanel.setVisibility(View.INVISIBLE);
-        trackPanel.setVisibility(View.INVISIBLE);
+
+        animate();
+//        Transition transition = createTransition();
+//        TransitionManager.beginDelayedTransition(detailContainer, transition);
+//        fab.setVisibility(View.INVISIBLE);
+//        titlePanel.setVisibility(View.INVISIBLE);
+//        trackPanel.setVisibility(View.INVISIBLE);
     }
 
     @OnClick(R.id.track_panel)
