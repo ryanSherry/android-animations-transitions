@@ -2,19 +2,15 @@ package com.teamtreehouse.albumcover.transitions;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
-import android.transition.Transition;
+import android.opengl.Visibility;
 import android.transition.TransitionValues;
-import android.transition.Visibility;
 import android.view.View;
 import android.view.ViewGroup;
 
-/**
- * Created by weasley on 1/6/16.
- */
-public class Fold extends Visibility {
+public class Fold extends android.transition.Visibility {
     @Override
     public Animator onAppear(ViewGroup sceneRoot, View view, TransitionValues startValues, TransitionValues endValues) {
-        return createFoldAnimator(view, false);
+        return  createFoldAnimator(view, false);
     }
 
     @Override
@@ -22,7 +18,7 @@ public class Fold extends Visibility {
         return createFoldAnimator(view, true);
     }
 
-    public Animator createFoldAnimator(View view, boolean folding) {
+    public Animator createFoldAnimator(View view, boolean folding){
         int start = view.getTop();
         int end = view.getTop() + view.getMeasuredHeight() - 1;
         if (folding) {
@@ -36,16 +32,3 @@ public class Fold extends Visibility {
         return animator;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
