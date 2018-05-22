@@ -3,14 +3,18 @@ package com.teamtreehouse.albumcover;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.graphics.Palette;
 import android.transition.ChangeBounds;
 import android.transition.Fade;
 import android.transition.Scene;
+import android.transition.Slide;
 import android.transition.Transition;
 import android.transition.TransitionManager;
 import android.transition.TransitionSet;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -137,6 +141,12 @@ public class AlbumDetailActivity extends Activity {
     }
 
     private void setupTransitions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Slide slide = new Slide(Gravity.BOTTOM);
+            slide.excludeTarget(android.R.id.statusBarBackground, true);
+            getWindow().setEnterTransition(slide);
+            getWindow().setSharedElementsUseOverlay(false);
+        }
         mTransitionManager = new TransitionManager();
         ViewGroup transitionRoot = detailContainer;
 
@@ -259,11 +269,14 @@ public class AlbumDetailActivity extends Activity {
 //    }
 
     private void populate() {
+
+
         int albumArtResId = getIntent().getIntExtra(EXTRA_ALBUM_ART_RESID, R.drawable.mean_something_kinder_than_wolves);
         albumArtView.setImageResource(albumArtResId);
 
         Bitmap albumBitmap = getReducedBitmap(albumArtResId);
         colorizeFromImage(albumBitmap);
+
     }
 
     private Bitmap getReducedBitmap(int albumArtResId) {

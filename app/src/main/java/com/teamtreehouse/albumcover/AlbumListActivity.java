@@ -3,6 +3,7 @@ package com.teamtreehouse.albumcover;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
@@ -31,7 +32,9 @@ public class AlbumListActivity extends Activity {
     }
 
     private void setupTransitions() {
-//        getWindow().setExitTransition(new Explode());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            getWindow().setExitTransition(new Explode());
+        }
     }
 
     interface OnVHClickedListener {
@@ -81,8 +84,10 @@ public class AlbumListActivity extends Activity {
                         Intent intent = new Intent(AlbumListActivity.this, AlbumDetailActivity.class);
                         intent.putExtra(AlbumDetailActivity.EXTRA_ALBUM_ART_RESID, albumArtResId);
 
-                        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                                AlbumListActivity.this, vh.albumArt, "albumArt");
+                        ActivityOptionsCompat options = null;
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                            options = ActivityOptionsCompat.makeSceneTransitionAnimation(AlbumListActivity.this, vh.albumArt, "albumArt");
+                        }
                         startActivity(intent, options.toBundle());
                     }
                 });
